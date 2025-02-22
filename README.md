@@ -1,3 +1,4 @@
+!!! Work under progresss !!!
 # DL-assignment1
 This repository is created for the Assignment 1 of DA6401 Deeplearning cousrse by Mithesh M Kaphra at Indian Institure of technology Madras by Sankar Vinayak E P\\
 This repository contains code as well as experiments done on the fasion mnist dataset\\
