@@ -1,3 +1,6 @@
+from models.base import Network
+import numpy as np
+
 def vanilla_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0,lmda:float=0):
   """
   Gradient descent default function for gradient descent weritten in such a way that momentum based GD can directly call

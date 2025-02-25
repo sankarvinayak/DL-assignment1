@@ -1,5 +1,5 @@
 from abc import abstractmethod
-
+import numpy as np
 class ActivationFn:
   @abstractmethod
   def forward(self,X):

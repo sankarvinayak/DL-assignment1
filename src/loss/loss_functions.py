@@ -1,3 +1,4 @@
+import numpy as np
 def MSE(prediction,actual):
   assert prediction.shape==actual.shape, "Shapes of prediction and actual must be the same"
   diff=prediction-actual

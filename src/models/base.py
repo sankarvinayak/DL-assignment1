@@ -1,3 +1,6 @@
+from activations.activation_functions import ActivationFn, Sigmoid
+import numpy as np
+from activations import *
 np.random.seed(41)
 
 class fc_layer:

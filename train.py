@@ -1,9 +1,9 @@
-from src.cli.options import get_args()
+from src.cli.options import get_args
 def main():
   args = get_args()
   wandb_entity=args.wandb_entity
   wandb_project=args.wandb_project
-  dataset=arg.dataset
+  dataset=args.dataset
   epoch=args.epoch
   batch_size=args.batch_size
   loss_fn=args.loss_fn

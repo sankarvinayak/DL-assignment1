@@ -1,3 +1,10 @@
+from loss.loss_functions import CrossEntropy
+from optimizers.optimization_functions import adam, momentum_based_gradient_descent, nadam, nestrov_accelerated_gradient_descent, rmsprop, vanilla_gradient_descent
+from utils.helper import construct_network, get_data
+from utils.metrics import accuracy
+import wandb
+import numpy as np
+from keras.datasets import fashion_mnist,mnist
 def wand_train(config=None):
   """loop which takes input from the wanb and run the model evalueate and send log to server"""
 
@@ -75,8 +82,8 @@ def wand_train(config=None):
   wandb.finish()
 
 def wandb_dataset_sample_images(dataset,project,entity):
-  run=wandb.init(project=project,entiry=entiry)
-  if dataet=='fmnist':
+  run=wandb.init(project=project,entiry=entity)
+  if dataset=='fmnist':
     (train_images, train_labels), _ = fashion_mnist.load_data()
     class_names=['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
   else:
@@ -85,7 +92,7 @@ def wandb_dataset_sample_images(dataset,project,entity):
   sample_images={}
   for label in range(10):
     id=np.where(train_labels==label)[0][0]
-    sample_image[label]=train_images[id]
+    sample_images[label]=train_images[id]
   push_list=[]
   for label in sorted(sample_images.keys()):
     caption=class_names[label]

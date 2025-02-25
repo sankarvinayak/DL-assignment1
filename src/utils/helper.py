@@ -1,3 +1,8 @@
+from activations.activation_functions import ReLU, Sigmoid, Softmax, Tanh
+import numpy as np
+from models.base import Network, fc_layer
+from keras.datasets import fashion_mnist
+
 def one_hot_encode(labels, num_classes):
   """convert output label into one hot encoded format"""
   return np.eye(num_classes)[labels]
