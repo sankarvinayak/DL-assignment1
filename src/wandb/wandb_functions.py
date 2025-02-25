@@ -73,3 +73,24 @@ def wand_train(config=None):
             "epoch": epoch
         })
   wandb.finish()
+
+def wandb_dataset_sample_images(dataset,project,entity):
+  run=wandb.init(project=project,entiry=entiry)
+  if dataet=='fmnist':
+    (train_images, train_labels), _ = fashion_mnist.load_data()
+    class_names=['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+  else:
+    (train_images, train_labels), _ = mnist.load_data()
+    class_names=[str(i) for i in range(10)]
+  sample_images={}
+  for label in range(10):
+    id=np.where(train_labels==label)[0][0]
+    sample_image[label]=train_images[id]
+  push_list=[]
+  for label in sorted(sample_images.keys()):
+    caption=class_names[label]
+    im=sample_images[label]
+    push_list.append(wandb.Image(im,caption=caption))
+  wandb.log({"fasion mnist each class samples":push_list})
+  wandb.finish()
+    
