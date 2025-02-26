@@ -95,7 +95,7 @@ def rmsprop(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,l
 
 def adam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,beta2=0.999,lmda:float=0,epsilon:float=0.000001):
   """
-  Adam optimizer 
+  Adam optimizer
   X_batch input batch
   Y_batch output batch
   model:Network model to train on
@@ -105,19 +105,53 @@ def adam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,bet
   beta2:float=0.9 momentum
   lmda:float=0 decay parameter
   """
-  pass
+  Y_hat=model.forward_pass_network(X_batch)
+  batch_loss_vec=loss_fn(Y_hat,Y_batch)
+  batch_loss=np.mean(batch_loss_vec)
+  model.calculate_grad(Y_hat,Y_batch)
+  for layer in model.layers:
+    grad_w=layer.grad_w+(lmda*layer.weights)
+    grad_b=layer.grad_b+(lmda*layer.bias)
+    layer.m_w=(beta1*layer.m_w)+((1-beta1)*grad_w)
+    layer.m_b=(beta1*layer.m_b)+((1-beta1)*grad_b)
+    m_w_hat=layer.m_w/(1-beta1)
+    m_b_hat=layer.m_b/(1-beta1)
+    layer.v_w=(beta2*layer.v_w)+((1-beta2)*(grad_w**2))
+    layer.v_b=(beta2*layer.v_b)+((1-beta2)*(grad_b**2))
+    v_w_hat=layer.v_w/(1-beta2)
+    v_b_hat=layer.v_b/(1-beta2)
+    layer.weights-=eta*(m_w_hat/(np.sqrt(v_w_hat)+epsilon))
+    layer.bias-=eta*(m_b_hat/(np.sqrt(v_b_hat)+epsilon))
+  return batch_loss
 
 def nadam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,beta2=0.999,lmda:float=0,epsilon:float=0.000001):
   """
-  nAdam optimizer 
+  nAdam optimizer
   X_batch input batch
   Y_batch output batch
   model:Network model to train on
   loss_fn loss function to use cross entropy in this case
   eta:float=0.1 learning rate
   beta1:float=0.9 momentum
-  beta2:float=0.9 momentum
+  beta2:float=0.99 momentum
   lmda:float=0 decay parameter
   """
-  pass
+  Y_hat=model.forward_pass_network(X_batch)
+  batch_loss_vec=loss_fn(Y_hat,Y_batch)
+  batch_loss=np.mean(batch_loss_vec)
+  model.calculate_grad(Y_hat,Y_batch)
+  for layer in model.layers:
+    grad_w=layer.grad_w+(lmda*layer.weights)
+    grad_b=layer.grad_b+(lmda*layer.bias)
+    layer.m_w=(beta1*layer.m_w)+((1-beta1)*grad_w)
+    layer.m_b=(beta1*layer.m_b)+((1-beta1)*grad_b)
+    m_w_hat=layer.m_w/(1-beta1)
+    m_b_hat=layer.m_b/(1-beta1)
+    layer.v_w=(beta2*layer.v_w)+((1-beta2)*(grad_w**2))
+    layer.v_b=(beta2*layer.v_b)+((1-beta2)*(grad_b**2))
+    v_w_hat=layer.v_w/(1-beta2)
+    v_b_hat=layer.v_b/(1-beta2)
+    layer.weights-=((eta/(np.sqrt(v_w_hat)+epsilon)*((beta1*m_w_hat)+(((1-beta1)*grad_w)/(1-beta1)))))
+    layer.bias-=((eta/(np.sqrt(v_b_hat)+epsilon)*((beta1*m_b_hat)+(((1-beta1)*grad_b)/(1-beta1)))))
+  return batch_loss
 

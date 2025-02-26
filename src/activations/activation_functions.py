@@ -9,11 +9,22 @@ class ActivationFn:
       pass
 
 
+# class Sigmoid(ActivationFn):
+#   def forward(self, X):
+    # """small modification on the implimentation of sigmoid to avoid overflow encountered in exp better numerical stability"""
+    # return np.where(X >= 0, 1/(1 + np.exp(-X)), np.exp(X)/(1 + np.exp(X)))
+      # return 1/(1 + np.exp(-X))
 class Sigmoid(ActivationFn):
   def forward(self, X):
-    """small modification on the implimentation of sigmoid to avoid overflow encountered in exp better numerical stability"""
-    return np.where(X >= 0, 1/(1 + np.exp(-X)), np.exp(X)/(1 + np.exp(X)))
-      # return 1/(1 + np.exp(-X))
+      out = np.empty_like(X)
+      pos_mask = X >= 0
+      neg_mask = ~pos_mask
+      out[pos_mask] = 1 / (1 + np.exp(-X[pos_mask]))
+      out[neg_mask] = np.exp(X[neg_mask]) / (1 + np.exp(X[neg_mask]))
+      return out
+  def grad(self,X):
+      forward_x = self.forward(X)
+      return forward_x*(1 - forward_x)
   def grad(self,X):
       forward_x = self.forward(X)
       return forward_x*(1 - forward_x)
