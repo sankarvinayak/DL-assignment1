@@ -1,12 +1,14 @@
 from activations.activation_functions import ActivationFn, Sigmoid
 import numpy as np
 from activations import *
+from utils.helper import xavier
 np.random.seed(41)
 
+np.random.seed(41)
 class fc_layer:
   def __init__(self,n_inputs:int,n_output:int,activation_fn:ActivationFn=Sigmoid(),initialization="random"):
     """Initialize the values of the network like weights,bias,momentum values u,sum values s etc
-    inputs 
+    inputs
     n_inputs:int input size
     n_output:int output size
     activation_fn:ActivationFn defalut sigmoid can be changed to tanh or ReLU
@@ -15,14 +17,16 @@ class fc_layer:
     if initialization=="Xavier":
       self.weights=xavier(n_inputs,n_output)
     else:
-      self.weights=np.random.randn(n_inputs, n_output)*0.1
+      self.weights=np.random.randn(n_inputs, n_output)*0.01 # reducing the random wright range empirically improve the initial loss
     self.bias=np.random.randn(1, n_output)
     self.grad_w=np.zeros_like(self.weights)
     self.grad_b=np.zeros_like(self.bias)
     self.u_w=np.zeros_like(self.weights)
     self.u_b=np.zeros_like(self.bias)
-    self.s_w=np.zeros_like(self.weights)
-    self.s_b=np.zeros_like(self.bias)
+    self.v_w=np.zeros_like(self.weights)
+    self.v_b=np.zeros_like(self.bias)
+    self.m_w=np.zeros_like(self.weights)
+    self.m_b=np.zeros_like(self.bias)
     self.activation_fn=activation_fn
   def forward_pass(self, h_prev):
     """ forward pass through this layer
