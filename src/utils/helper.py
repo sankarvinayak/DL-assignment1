@@ -39,8 +39,8 @@ def get_data(dataset_name:str="fmnist")->tuple:
   """
   if(dataset_name=="fmnist"):
     (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
-  x_train_flat=x_train.reshape(x_train.shape[0],-1)
-  x_test_flat=x_test.reshape(x_test.shape[0],-1)
+  x_train_flat=x_train.reshape(x_train.shape[0],-1)/255.0
+  x_test_flat=x_test.reshape(x_test.shape[0],-1)/255.0
   one_hot_y_train=one_hot_encode(y_train,np.unique(y_train).shape[0])
   one_hot_y_test=one_hot_encode(y_test,np.unique(y_test).shape[0])
   return x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test
