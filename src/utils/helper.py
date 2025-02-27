@@ -10,6 +10,11 @@ def one_hot_encode(labels, num_classes):
   """convert output label into one hot encoded format"""
   return np.eye(num_classes)[labels]
 
+def xavier(n_inputs,n_output):
+  """Best for tanh and sigmoid"""
+  limit = np.sqrt(6 / (n_inputs + n_output))
+  return np.random.uniform(-limit, limit, (n_inputs, n_output))
+
 
 def construct_network(inp_size:int,num_layers:int,layer_size:int,out_size:int,activation_f:str,weight_initialisation:str="random")->Network:
   """ Network constructor return network object which can be trained
