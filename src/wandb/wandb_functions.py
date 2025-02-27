@@ -5,6 +5,7 @@ from utils.metrics import accuracy
 import wandb
 import numpy as np
 from keras.datasets import fashion_mnist,mnist
+
 def wand_train(config=None):
   """loop which takes input from the wanb and run the model evalueate and send log to server"""
 
@@ -14,12 +15,11 @@ def wand_train(config=None):
 
     num_hidden_layers=config.num_hidden_layers
     hidden_layer_size=config.hidden_layer_size
-    weight_decay=config.weight_decay
+    lmda=config.weight_decay
     optimizer=config.optimizer
     weight_initialisation=config.weight_initialisation
     activation_function=config.activation_function
     lr=config.learning_rate
-    beta=config.momentum
     num_epochs=config.epochs
     batch_size=config.batch_size
     dataset_name=config.dataset
@@ -27,10 +27,10 @@ def wand_train(config=None):
     x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name=dataset_name)
     inp_shp=x_train_flat.shape[1]
     out_shp=np.unique(y_train).shape[0]
-    net=construct_network(inp_size=inp_shp,num_layers=num_hidden_layers,layer_size=hidden_layer_size,out_size=out_shp,activation_f=activation_function,weight_initialisation=weight_initialisation,weight_decay=weight_decay)
+    net=construct_network(inp_size=inp_shp,num_layers=num_hidden_layers,layer_size=hidden_layer_size,out_size=out_shp,activation_f=activation_function,weight_initialisation=weight_initialisation)
 
     n_samples=x_train_flat.shape[0]
-    if optimizer=='SGD':
+    if optimizer=='sgd':
       batch_size=1
     loss_fn=CrossEntropy
 
@@ -38,28 +38,28 @@ def wand_train(config=None):
 
       permutation=np.random.permutation(n_samples)
       x_train=x_train_flat[permutation]
-      y_train=one_hot_y_train[permutation]
+      one_hot_y_train=one_hot_y_train[permutation]
       train_loss=0
       num_batches=0
 
       for i in range(0, n_samples, batch_size):
         batch_end=min(i + batch_size, n_samples)
         x_batch=x_train[i:batch_end]
-        y_batch=y_train[i:batch_end]
+        y_batch=one_hot_y_train[i:batch_end]
 
         net.zero_grad()
-        if optimizer=='SGD':
-          batch_loss=vanilla_gradient_descent(x_batch,y_batch,net,loss_fn,beta=beta,eta=lr)
+        if optimizer=='sgd':
+          batch_loss=vanilla_gradient_descent(x_batch,y_batch,net,loss_fn,eta=lr,lmda=lmda)
         elif optimizer=='momentum':
-          batch_loss=momentum_based_gradient_descent(x_batch,y_batch,net,loss_fn,beta=beta,eta=lr)
+          batch_loss=momentum_based_gradient_descent(x_batch,y_batch,net,loss_fn,eta=lr,lmda=lmda)
         elif optimizer=='nesterov':
-          batch_loss=nestrov_accelerated_gradient_descent(x_batch,y_batch,net,loss_fn,beta=beta,eta=lr)
+          batch_loss=nestrov_accelerated_gradient_descent(x_batch,y_batch,net,loss_fn,eta=lr,lmda=lmda)
         elif optimizer=='rmsprop':
-          batch_loss=rmsprop(x_batch,y_batch,net,loss_fn,beta=beta,eta=lr)
+          batch_loss=rmsprop(x_batch,y_batch,net,loss_fn,eta=lr,lmda=lmda)
         elif optimizer=='adam':
-          batch_loss=adam(x_batch,y_batch,net,loss_fn,beta=beta,eta=lr)
+          batch_loss=adam(x_batch,y_batch,net,loss_fn,eta=lr,lmda=lmda)
         elif optimizer=='nadam':
-          batch_loss=nadam
+          batch_loss=nadam(x_batch,y_batch,net,loss_fn,eta=lr,lmda=lmda)
 
         train_loss+=batch_loss
         num_batches+=1
@@ -77,27 +77,7 @@ def wand_train(config=None):
             "val_accuracy": val_acc,
             "train_loss": train_loss,
             "val_loss": val_loss,
-            "epoch": epoch
+            "epoch": epoch+1
         })
-  wandb.finish()
-
-def wandb_dataset_sample_images(dataset,project,entity):
-  run=wandb.init(project=project,entiry=entity)
-  if dataset=='fmnist':
-    (train_images, train_labels), _ = fashion_mnist.load_data()
-    class_names=['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
-  else:
-    (train_images, train_labels), _ = mnist.load_data()
-    class_names=[str(i) for i in range(10)]
-  sample_images={}
-  for label in range(10):
-    id=np.where(train_labels==label)[0][0]
-    sample_images[label]=train_images[id]
-  push_list=[]
-  for label in sorted(sample_images.keys()):
-    caption=class_names[label]
-    im=sample_images[label]
-    push_list.append(wandb.Image(im,caption=caption))
-  wandb.log({"fasion mnist each class samples":push_list})
   wandb.finish()
     
