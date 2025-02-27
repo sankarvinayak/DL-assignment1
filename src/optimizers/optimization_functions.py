@@ -37,7 +37,7 @@ def momentum_based_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:fl
   """
   return vanilla_gradient_descent(X_batch=X_batch,Y_batch=Y_batch,model=model,loss_fn=loss_fn,eta=eta,beta=beta,lmda=lmda)
 
-def nestrov_accelerated_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.5,lmda:float=0):
+def nestrov_accelerated_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,lmda:float=0):
   """
   Nestrov accelerated gradient descent (NAG)
   X_batch input batch
@@ -45,7 +45,7 @@ def nestrov_accelerated_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,e
   model:Network model to train on
   loss_fn loss function to use cross entropy in this case
   eta:float=0.1 learning rate
-  beta:float=0.5 momentum
+  beta:float=0.9 momentum
   lmda:float=0 decay parameter
   """
   original_params = []
@@ -71,13 +71,13 @@ def nestrov_accelerated_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,e
 
 def rmsprop(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,lmda:float=0,epsilon:float=0.000001):
   """
-  RMSProp 
+  RMSProp
   X_batch input batch
   Y_batch output batch
   model:Network model to train on
   loss_fn loss function to use cross entropy in this case
   eta:float=0.1 learning rate
-  beta:float=0.5 momentum
+  beta:float=0.9 momentum
   lmda:float=0 decay parameter
   """
   Y_hat=model.forward_pass_network(X_batch)
@@ -87,10 +87,10 @@ def rmsprop(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,l
   for layer in model.layers:
     grad_w=layer.grad_w+(lmda*layer.weights)
     grad_b=layer.grad_b+(lmda*layer.bias)
-    layer.s_w=(beta*layer.s_w)+((1-beta)*(grad_w**2))
-    layer.s_b=(beta*layer.s_b)+((1-beta)*(grad_b**2))
-    layer.weights-=eta*(grad_w/(np.sqrt(layer.s_w)+epsilon))
-    layer.bias-=eta*(grad_b/(np.sqrt(layer.s_b)+epsilon))
+    layer.v_w=(beta*layer.v_w)+((1-beta)*(grad_w**2))
+    layer.v_b=(beta*layer.v_b)+((1-beta)*(grad_b**2))
+    layer.weights-=eta*(grad_w/(np.sqrt(layer.v_w)+epsilon))
+    layer.bias-=eta*(grad_b/(np.sqrt(layer.v_b)+epsilon))
   return batch_loss
 
 def adam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,beta2=0.999,lmda:float=0,epsilon:float=0.000001):
