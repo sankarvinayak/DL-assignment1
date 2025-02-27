@@ -20,7 +20,7 @@ class Sigmoid(ActivationFn):
       pos_mask = X >= 0
       neg_mask = ~pos_mask
       out[pos_mask] = 1 / (1 + np.exp(-X[pos_mask]))
-      out[neg_mask] = np.exp(X[neg_mask]) / (1 + np.exp(X[neg_mask]))
+      out[neg_mask] = np.exp(X[neg_mask]) / (1 + np.exp(X[neg_mask])) # Help reducing the numeraical instability
       return out
   def grad(self,X):
       forward_x = self.forward(X)
@@ -57,5 +57,5 @@ class Softmax(ActivationFn):
 class Linear(ActivationFn):
   def forward(self,X):
     return X
-  def grad():
-    return 1
+  def grad(self,X):
+    return np.ones_like(X)
