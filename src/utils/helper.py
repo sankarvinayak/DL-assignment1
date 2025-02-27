@@ -8,7 +8,7 @@ def one_hot_encode(labels, num_classes):
   return np.eye(num_classes)[labels]
 
 
-def construct_network(inp_size:int,num_layers:int,layer_size:int,out_size:int,activation_f:str,weight_initialisation:str)->Network:
+def construct_network(inp_size:int,num_layers:int,layer_size:int,out_size:int,activation_f:str,weight_initialisation:str="random")->Network:
   """ Network constructor return network object which can be trained
   inp_size:int input dimension
   num_layers:int number of hidden layers
