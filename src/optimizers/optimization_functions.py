@@ -23,9 +23,9 @@ def vanilla_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1
     layer.bias-=layer.u_b
   return batch_loss
 
-def momentum_based_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.5,lmda:float=0):
+def momentum_based_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,lmda:float=0):
   """
-  Momentum based Gradient Descent 
+  Momentum based Gradient Descent
   X_batch input batch
   Y_batch output batch
   model:Network model to train on
