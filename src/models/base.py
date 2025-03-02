@@ -1,10 +1,9 @@
 from activations.activation_functions import ActivationFn, Sigmoid
 import numpy as np
 from activations import *
-from utils.helper import xavier
-np.random.seed(41)
+from loss.loss_functions import MSE, CrossEntropy
+from utils.helper import mse_softmax_grad, xavier
 
-np.random.seed(41)
 class fc_layer:
   def __init__(self,n_inputs:int,n_output:int,activation_fn:ActivationFn=Sigmoid(),initialization="random"):
     """Initialize the values of the network like weights,bias,momentum values u,sum values s etc
@@ -13,11 +12,22 @@ class fc_layer:
     n_output:int output size
     activation_fn:ActivationFn defalut sigmoid can be changed to tanh or ReLU
     initialization random by default can be changed to Xavier
+    grad_w store gradient of weights
+    grad_b store gradient of bias
+    u_w stores the history for weights used in momentum and nestrov
+    u_b stores the history for bias momentum and nestrov
+    v_w stores the history for weights used in rmsprop
+    v_b stores the history for bias momentum and rmsprop
+    m_w stores the history for weights used in adam and nadam
+    m_b stores the history for bias momentum and adam nadam
     """
+    np.random.seed(41)
     if initialization=="Xavier":
       self.weights=xavier(n_inputs,n_output)
-    else:
+    elif initialization=="random":
       self.weights=np.random.randn(n_inputs, n_output)*0.01 # reducing the random wright range empirically improve the initial loss
+    else:
+      raise ValueError("Invalid initialization method or not yet implimented")
     self.bias=np.random.randn(1, n_output)
     self.grad_w=np.zeros_like(self.weights)
     self.grad_b=np.zeros_like(self.bias)
@@ -40,9 +50,9 @@ class fc_layer:
     self.grad_w=np.zeros_like(self.weights)
     self.grad_b=np.zeros_like(self.bias)
 
-
 class Network:
   def __init__(self):
+    """Initialize with an empty list so that layers can be appended to it similar implimentation is availivale in tf and pytorch"""
     self.layers=[]
   def append_layer(self,layer:fc_layer):
     """
@@ -52,20 +62,22 @@ class Network:
     self.layers.append(layer)
   def forward_pass_network(self,X):
     """
-    do the forward pass thruugh the network and return Y_hat 
+    do the forward pass thruugh the network and return Y_hat
     """
     self.input=X
     temp=X
-    # print(temp.shape)
     for layer in self.layers:
         temp=layer.forward_pass(temp)
     self.output=temp
     return self.output
-  def calculate_grad(self,Y_hat,Y_true):
+  def calculate_grad(self,Y_hat,Y_true,loss_fn=CrossEntropy):
     """takes y_hat and y_true as input
     calculate the gradient from last to the first layer using the the way taught in lecture"""
     batch_size=Y_true.shape[0]
-    grad_aL=-(Y_true-Y_hat)/batch_size
+    if loss_fn is MSE:
+      grad_aL = mse_softmax_grad(Y_hat, Y_true)
+    else:
+      grad_aL = (Y_hat - Y_true) / batch_size
     grad_ak=grad_aL
     for k in reversed(range(len(self.layers))):
         layer=self.layers[k]
