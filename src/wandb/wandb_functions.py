@@ -148,7 +148,7 @@ def wandb_run_experiment(args):
         config["beta1"]=beta1
         config["beta2"]=beta2
         config["epsilon"]=epsilon
-    config['weight_deacay']=lmda
+    config['weight_decay']=lmda
     config['num_layers']=num_layers
     config['hidden_size']=hidden_size
     config['activation']=activation
@@ -159,9 +159,7 @@ def wandb_run_experiment(args):
     inp_shp=x_train_flat.shape[1]
     out_shp=np.unique(y_train).shape[0]
     np.random.seed(41)
-    
     model=construct_network(inp_size=inp_shp,num_layers=num_layers,layer_size=hidden_size,out_size=out_shp,activation_f=activation,weight_initialisation=weight_init)
-
     n_samples=x_train_flat.shape[0]
     loss_fn=CrossEntropy
     n_samples = x_train_flat.shape[0]
@@ -210,4 +208,5 @@ def wandb_run_experiment(args):
             "val_loss": val_loss,
             "epoch": epoch+1
         })
+    run.finish()
 

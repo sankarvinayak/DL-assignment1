@@ -2,7 +2,23 @@ from ..activations.activation_functions import ActivationFn, Sigmoid
 import numpy as np
 from ..activations import *
 from ..loss.loss_functions import MSE, CrossEntropy
-from ..utils.helper import mse_softmax_grad, xavier
+
+def one_hot_encode(labels, num_classes):
+  """convert output label into one hot encoded format"""
+  return np.eye(num_classes)[labels]
+
+def xavier(n_inputs,n_output):
+  """Best for tanh and sigmoid
+  introduced in Understanding the difficulty of training deep feedforward neural networks"""
+  limit = np.sqrt(6 / (n_inputs + n_output))
+  return np.random.uniform(-limit, limit, (n_inputs, n_output))
+
+def mse_softmax_grad(y_hat,y_pred):
+  """Gradient of softmax with squared error loss with respect to a_L the preactivaton of last layer
+  """
+  err=y_hat-y_pred
+  sum=np.sum(err*y_hat,axis=1,keepdims=True)
+  return y_hat*(err-sum)
 
 class fc_layer:
   def __init__(self,n_inputs:int,n_output:int,activation_fn:ActivationFn=Sigmoid(),initialization="random"):

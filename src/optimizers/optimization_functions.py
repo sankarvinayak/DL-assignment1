@@ -1,4 +1,4 @@
-from models.base import Network
+from ..models.base import Network
 import numpy as np
 
 def vanilla_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0,lmda:float=0):
