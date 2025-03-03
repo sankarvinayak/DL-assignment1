@@ -7,13 +7,7 @@ class ActivationFn:
   @abstractmethod
   def grad(self,X):
       pass
-
-
-# class Sigmoid(ActivationFn):
-#   def forward(self, X):
-    # """small modification on the implimentation of sigmoid to avoid overflow encountered in exp better numerical stability"""
-    # return np.where(X >= 0, 1/(1 + np.exp(-X)), np.exp(X)/(1 + np.exp(X)))
-      # return 1/(1 + np.exp(-X))
+  
 class Sigmoid(ActivationFn):
   def forward(self, X):
       out = np.empty_like(X)

@@ -1,4 +1,3 @@
-from ..activations.activation_functions import Sigmoid
 from ..loss.loss_functions import CrossEntropy
 from ..optimizers.optimization_functions import adam, momentum_based_gradient_descent, nadam, nestrov_accelerated_gradient_descent, rmsprop, vanilla_gradient_descent
 from ..utils.helper import construct_network, get_data
