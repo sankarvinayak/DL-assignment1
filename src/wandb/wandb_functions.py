@@ -1,10 +1,14 @@
-from loss.loss_functions import CrossEntropy
-from optimizers.optimization_functions import adam, momentum_based_gradient_descent, nadam, nestrov_accelerated_gradient_descent, rmsprop, vanilla_gradient_descent
-from utils.helper import construct_network, get_data
-from utils.metrics import accuracy
+from ..activations.activation_functions import Sigmoid
+from ..loss.loss_functions import CrossEntropy
+from ..optimizers.optimization_functions import adam, momentum_based_gradient_descent, nadam, nestrov_accelerated_gradient_descent, rmsprop, vanilla_gradient_descent
+from ..utils.helper import construct_network, get_data
+from ..utils.metrics import accuracy
 import wandb
 import numpy as np
 from keras.datasets import fashion_mnist,mnist
+
+import wandb
+
 
 def wandb_log_sample_images(project: str, entity: str, dataset_name: str):
     run = wandb.init(project=project, entity=entity)
@@ -107,3 +111,103 @@ def wand_train(config=None):
             "epoch": epoch+1
         })
   # wandb.finish()
+
+def wandb_run_experiment(args):
+    wandb_entity=args.wandb_entity
+    wandb_project=args.wandb_project
+    dataset=args.dataset 
+    epochs=args.epochs
+    batch_size=args.batch_size 
+    loss=args.loss
+    optimizer=args.optimizer
+    lr=args.learning_rate
+    momentum=args.momentum 
+    beta=args.beta 
+    beta1=args.beta1
+    beta2=args.beta2
+    weight_init=args.weight_init
+    epsilon=args.epsilon 
+    lmda=args.weight_decay
+    num_layers=args.num_layers
+    hidden_size=args.hidden_size
+    activation=args.activation
+    config={}
+    if dataset=="fashion_mnist":
+        dataset='fmnist'
+    config['dataset']=dataset
+    config['epochs']=epochs
+    config['batch_size']=batch_size
+    config['loss']=loss
+    config['lr']=lr
+    config['optimizer']=optimizer
+    if optimizer=="momentum" or optimizer=="nag":
+        config['momentum']=momentum
+    elif optimizer=="rmsprop":
+        config['beta']=beta
+    elif optimizer=='adam' or optimizer=='nadam':
+        config["beta1"]=beta1
+        config["beta2"]=beta2
+        config["epsilon"]=epsilon
+    config['weight_deacay']=lmda
+    config['num_layers']=num_layers
+    config['hidden_size']=hidden_size
+    config['activation']=activation
+    wandb_log_sample_images(wandb_project,wandb_entity,dataset)
+    run=wandb.init(entity=wandb_entity,project=wandb_project,config=config)
+    np.random.seed(41)
+    x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name=dataset)
+    inp_shp=x_train_flat.shape[1]
+    out_shp=np.unique(y_train).shape[0]
+    np.random.seed(41)
+    
+    model=construct_network(inp_size=inp_shp,num_layers=num_layers,layer_size=hidden_size,out_size=out_shp,activation_f=activation,weight_initialisation=weight_init)
+
+    n_samples=x_train_flat.shape[0]
+    loss_fn=CrossEntropy
+    n_samples = x_train_flat.shape[0]
+
+    for epoch in range(epochs):
+        permutation = np.random.permutation(n_samples)
+        X_shuffled = x_train_flat[permutation]
+        Y_shuffled = one_hot_y_train[permutation]
+        epoch_loss = 0.0
+        num_batches = 0
+
+        for i in range(0, n_samples, batch_size):
+            batch_end = min(i + batch_size, n_samples)
+            X_batch = X_shuffled[i:batch_end]
+            Y_batch = Y_shuffled[i:batch_end]
+            model.zero_grad()
+            if optimizer =="sgd" :
+                batch_loss = vanilla_gradient_descent(X_batch, Y_batch, model, loss_fn,  eta=lr,lmda=lmda)
+            elif optimizer == "momentum":
+                batch_loss = momentum_based_gradient_descent(X_batch, Y_batch, model, loss_fn,beta=momentum,  eta=lr,lmda=lmda)
+            elif optimizer == "nesterov":
+                batch_loss = nestrov_accelerated_gradient_descent(X_batch, Y_batch, model, loss_fn,beta=momentum,  eta=lr,lmda=lmda)
+            elif optimizer == "rmsprop":
+                batch_loss = rmsprop(X_batch, Y_batch, model, loss_fn, eta=lr,beta=beta,  lmda=lmda)
+            elif optimizer == "adam":
+                batch_loss = adam(X_batch, Y_batch, model, loss_fn, eta=lr,beta1=beta1,beta2=beta2, lmda=lmda)
+            elif optimizer == "nadam":
+                batch_loss = nadam(X_batch, Y_batch, model, loss_fn, eta=lr,beta1=beta1,beta2=beta2,  lmda=lmda)
+
+            epoch_loss += batch_loss
+            num_batches += 1
+
+        epoch_loss /= num_batches
+        y_pred = model.forward_pass_network(x_train_flat)
+        train_acc = accuracy(y_train, y_pred)
+        test_pred = model.forward_pass_network(x_test_flat)
+        val_loss=loss_fn(test_pred,one_hot_y_test)
+        val_loss=np.mean(val_loss)
+        val_acc=accuracy(y_test,test_pred)
+
+        print(f"Epoch {epoch}: Loss = {epoch_loss:.4f}, Train Accuracy = {train_acc:.4f} val_loss:{val_loss:.4f} val_acc:{val_acc:.4f}")
+        wandb.log({
+            "train_accuracy": train_acc,
+            "val_accuracy": val_acc,
+            "train_loss": epoch_loss,
+            "val_loss": val_loss,
+            "epoch": epoch+1
+        })
+

@@ -1,8 +1,8 @@
-from activations.activation_functions import ActivationFn, Sigmoid
+from ..activations.activation_functions import ActivationFn, Sigmoid
 import numpy as np
-from activations import *
-from loss.loss_functions import MSE, CrossEntropy
-from utils.helper import mse_softmax_grad, xavier
+from ..activations import *
+from ..loss.loss_functions import MSE, CrossEntropy
+from ..utils.helper import mse_softmax_grad, xavier
 
 class fc_layer:
   def __init__(self,n_inputs:int,n_output:int,activation_fn:ActivationFn=Sigmoid(),initialization="random"):

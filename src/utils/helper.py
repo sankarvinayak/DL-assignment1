@@ -1,11 +1,11 @@
 import keras
-from activations.activation_functions import ReLU, Sigmoid, Softmax, Tanh
-from loss.loss_functions import CrossEntropy
+from ..activations.activation_functions import Linear, ReLU, Sigmoid, Softmax, Tanh
+from ..loss.loss_functions import CrossEntropy
 import numpy as np
-from models.base import Network, fc_layer
+from ..models.base import Network, fc_layer
 from keras.datasets import fashion_mnist,mnist
-from optimizers.optimization_functions import adam, momentum_based_gradient_descent, nadam, nestrov_accelerated_gradient_descent, rmsprop, vanilla_gradient_descent
-from utils.metrics import accuracy
+from ..optimizers.optimization_functions import adam, momentum_based_gradient_descent, nadam, nestrov_accelerated_gradient_descent, rmsprop, vanilla_gradient_descent
+from ..utils.metrics import accuracy
 
 def one_hot_encode(labels, num_classes):
   """convert output label into one hot encoded format"""
@@ -42,6 +42,8 @@ def construct_network(inp_size:int,num_layers:int,layer_size:int,out_size:int,ac
     activation_fn=Tanh()
   elif(activation_f=='ReLU'):
     activation_fn=ReLU()
+  elif(activation_f=='identity'):
+     activation_fn=Linear()
   else:
     raise ValueError("Invalid activation function or not implimented yet")
   net.append_layer(fc_layer(n_inputs=inp_size, n_output=layer_size, activation_fn=activation_fn,initialization=weight_initialisation))
