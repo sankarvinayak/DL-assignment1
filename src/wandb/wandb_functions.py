@@ -10,6 +10,7 @@ import wandb
 
 
 def wandb_log_sample_images(project: str, entity: str, dataset_name: str):
+    print(f"Logging sample image from {dataset_name} into wandb")
     if dataset_name.lower() == "fmnist":
         (x_train, y_train), _ = fashion_mnist.load_data()
         class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
@@ -155,6 +156,7 @@ def wandb_run_experiment(args):
     run=wandb.init(entity=wandb_entity,project=wandb_project,config=config)
     wandb_log_sample_images(wandb_project,wandb_entity,dataset)
     np.random.seed(41)
-    train_model(dataset_name=dataset,num_hidden_layers=num_layers,hidden_layer_size=hidden_size,num_epochs=epochs,activation_function=activation,batch_size=batch_size,optimizer=optimizer,lr=lr,lmda=lmda,momentum=momentum,beta=beta,beta1=beta1,beta2=beta2,epsilon=epsilon,logging=True)
+    train_model(dataset_name=dataset,num_hidden_layers=num_layers,hidden_layer_size=hidden_size,num_epochs=epochs,activation_function=activation,batch_size=batch_size,optimizer=optimizer,lr=lr,lmda=lmda,momentum=momentum,beta=beta,beta1=beta1,beta2=beta2,epsilon=epsilon,weight_initialisation=weight_init,logging=True)
     run.finish()
+    print("Run finished,check wandb for the data")
 

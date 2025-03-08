@@ -92,7 +92,9 @@ def create_conf_mat(y_true:list,y_pred:list,class_labels:list,title="Confusion M
 
 def train_model(dataset_name,num_hidden_layers,hidden_layer_size,num_epochs,activation_function,weight_initialisation,batch_size,optimizer,lr,lmda,momentum=0.9,beta=0.9,beta1=0.9,beta2=0.999,epsilon=0.000001,logging=False):
     np.random.seed(41)
+    print("Getting data")
     x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name=dataset_name)
+    print("Splitting into train and validation set")
     n_samples=x_train_flat.shape[0]
     indices=np.random.permutation(n_samples)
     train_cutoff=int(0.9*n_samples)
@@ -106,11 +108,12 @@ def train_model(dataset_name,num_hidden_layers,hidden_layer_size,num_epochs,acti
 
     inp_shp=x_train_flat.shape[1]
     out_shp=np.unique(y_train).shape[0]
+    print("Creating network for training")
     model=construct_network(inp_size=inp_shp, num_layers=num_hidden_layers,layer_size=hidden_layer_size, out_size=out_shp,activation_f=activation_function,weight_initialisation=weight_initialisation)
 
     loss_fn = CrossEntropy
     n_train = x_train_new.shape[0]
-
+    print("Training started")
     for epoch in range(num_epochs):
         permutation = np.random.permutation(n_train)
         X_shuffled = x_train_new[permutation]
@@ -149,17 +152,18 @@ def train_model(dataset_name,num_hidden_layers,hidden_layer_size,num_epochs,acti
         print(f"Epoch {epoch}: Loss = {epoch_loss:.4f}, Train Accuracy = {train_acc:.4f}, Val Loss = {val_loss:.4f}, Val Accuracy = {val_acc:.4f}")
         if logging:
             wandb.log({"train_accuracy":train_acc,"val_accuracy":val_acc,"train_loss":epoch_loss,"val_loss":val_loss,"epoch":epoch+1})
+    print("Training finished")
     if logging:
       y_pred=np.argmax( model.forward_pass_network(x_test_flat),axis=1)
       if dataset_name=='fmnist':
         class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
       elif dataset_name=='mnist':
         class_names=[str(i) for i in  range(10)]
-
+      print("Logging confusion matrix")
       fig=create_conf_mat(y_test,y_pred,class_names,"Confusion Matrix") 
       wandb.log({"plot": wandb.Plotly(fig)})
       
-       
+    
     return model
 
 
