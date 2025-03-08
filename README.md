@@ -9,6 +9,11 @@ It make use of [Weights and bias](https://wandb.ai) framework for experiment tra
 
 ### Instructions on running the code
 ```
+git clone https://github.com/sankarvinayak/DL-assignment1.git
+```
+or Download the [zipfile][https://github.com/sankarvinayak/DL-assignment1/archive/refs/heads/main.zip] and extract in to current directry
+```
+cd DL-assignment1
 python train.py --wandb_entity myname --wandb_project myprojectname
 ```
 For more information follow the `DL_assignment_1.ipynb` file in which each step is described more clearly 
