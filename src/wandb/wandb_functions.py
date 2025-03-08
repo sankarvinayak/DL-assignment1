@@ -36,82 +36,84 @@ def wandb_log_sample_images(project: str, entity: str, dataset_name: str):
 
 
 def wand_train(config=None):
-  """loop which takes input from the wanb and run the model evalueate and send log to server
-  use as wandb.agent(sweep_id, wand_train)
-  """
-
+  """Loop which takes input from wandb, runs training and evaluation, and sends logs to the server.
+  training set is split into 90% train and 10% validation.
+  use as wandb.agent(sweep_id, wand_train)"""
   with wandb.init(config=config):
-
     config = wandb.config
 
-    num_hidden_layers=config.num_hidden_layers
-    hidden_layer_size=config.hidden_layer_size
-    lmda=config.weight_decay
-    optimizer=config.optimizer
-    weight_initialisation=config.weight_initialisation
-    activation_function=config.activation_function
-    lr=config.learning_rate
-    num_epochs=config.epochs
-    batch_size=config.batch_size
-    dataset_name=config.dataset
+    num_hidden_layers = config.num_hidden_layers
+    hidden_layer_size = config.hidden_layer_size
+    lmda = config.weight_decay
+    optimizer = config.optimizer
+    weight_initialisation = config.weight_initialisation
+    activation_function = config.activation_function
+    lr = config.learning_rate
+    num_epochs = config.epochs
+    batch_size = config.batch_size
+    dataset_name = config.dataset
 
+    np.random.seed(41)
     x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name=dataset_name)
+    n_samples=x_train_flat.shape[0]
+    indices=np.random.permutation(n_samples)
+    train_cutoff=int(0.9*n_samples)
+    train_id,val_idx=indices[:train_cutoff],indices[train_cutoff:]
+    x_train_new=x_train_flat[train_id]
+    one_hot_y_train_new=one_hot_y_train[train_id]
+    y_train_new=y_train[train_id]
+    x_val=x_train_flat[val_idx]
+    one_hot_y_val=one_hot_y_train[val_idx]
+    y_val=y_train[val_idx]
+
     inp_shp=x_train_flat.shape[1]
     out_shp=np.unique(y_train).shape[0]
-    np.random.seed(41)
-    model=construct_network(inp_size=inp_shp,num_layers=num_hidden_layers,layer_size=hidden_layer_size,out_size=out_shp,activation_f=activation_function,weight_initialisation=weight_initialisation)
+    model=construct_network(inp_size=inp_shp, num_layers=num_hidden_layers,layer_size=hidden_layer_size, out_size=out_shp,activation_f=activation_function,weight_initialisation=weight_initialisation)
 
-    n_samples=x_train_flat.shape[0]
-    loss_fn=CrossEntropy
-    n_samples = x_train_flat.shape[0]
+    loss_fn = CrossEntropy
+    n_train = x_train_new.shape[0]
 
     for epoch in range(num_epochs):
-        permutation = np.random.permutation(n_samples)
-        X_shuffled = x_train_flat[permutation]
-        Y_shuffled = one_hot_y_train[permutation]
+        permutation = np.random.permutation(n_train)
+        X_shuffled = x_train_new[permutation]
+        Y_shuffled = one_hot_y_train_new[permutation]
         epoch_loss = 0.0
         num_batches = 0
 
-        for i in range(0, n_samples, batch_size):
-            batch_end = min(i + batch_size, n_samples)
+        for i in range(0, n_train, batch_size):
+            batch_end = min(i + batch_size, n_train)
             X_batch = X_shuffled[i:batch_end]
             Y_batch = Y_shuffled[i:batch_end]
             model.zero_grad()
-            if optimizer =="sgd" :
-                batch_loss = vanilla_gradient_descent(X_batch, Y_batch, model, loss_fn,  eta=lr,lmda=lmda)
-            elif optimizer == "momentum":
-                batch_loss = momentum_based_gradient_descent(X_batch, Y_batch, model, loss_fn,  eta=lr,lmda=lmda)
-            elif optimizer == "nesterov":
-                batch_loss = nestrov_accelerated_gradient_descent(X_batch, Y_batch, model, loss_fn,  eta=lr,lmda=lmda)
-            elif optimizer == "rmsprop":
-                batch_loss = rmsprop(X_batch, Y_batch, model, loss_fn, eta=lr,  lmda=lmda)
-            elif optimizer == "adam":
-                batch_loss = adam(X_batch, Y_batch, model, loss_fn, eta=lr, lmda=lmda)
-            elif optimizer == "nadam":
-                batch_loss = nadam(X_batch, Y_batch, model, loss_fn, eta=lr,  lmda=lmda)
+            if optimizer=="sgd":
+                batch_loss=vanilla_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            elif optimizer=="momentum":
+                batch_loss=momentum_based_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            elif optimizer=="nesterov":
+                batch_loss=nestrov_accelerated_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            elif optimizer=="rmsprop":
+                batch_loss=rmsprop(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            elif optimizer=="adam":
+                batch_loss=adam(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            elif optimizer=="nadam":
+                batch_loss=nadam(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
 
-            epoch_loss += batch_loss
-            num_batches += 1
+            epoch_loss+=batch_loss
+            num_batches+=1
 
-        epoch_loss /= num_batches
-        y_pred = model.forward_pass_network(x_train_flat)
-        train_acc = accuracy(y_train, y_pred)
-        test_pred = model.forward_pass_network(x_test_flat)
-        val_loss=loss_fn(test_pred,one_hot_y_test)
-        val_loss=np.mean(val_loss)
-        val_acc=accuracy(y_test,test_pred)
+        epoch_loss/=num_batches
+        y_pred_train=model.forward_pass_network(x_train_new)
+        train_acc=accuracy(y_train_new, y_pred_train)
+        y_pred_val=model.forward_pass_network(x_val)
+        val_loss=np.mean(loss_fn(y_pred_val, one_hot_y_val))
+        val_acc=accuracy(y_val, y_pred_val)
 
-        print(f"Epoch {epoch}: Loss = {epoch_loss:.4f}, Train Accuracy = {train_acc:.4f} val_loss:{val_loss:.4f} val_acc:{val_acc:.4f}")
-        wandb.log({
-            "train_accuracy": train_acc,
-            "val_accuracy": val_acc,
-            "train_loss": epoch_loss,
-            "val_loss": val_loss,
-            "epoch": epoch+1
-        })
-  # wandb.finish()
+        print(f"Epoch {epoch}: Loss = {epoch_loss:.4f}, Train Accuracy = {train_acc:.4f}, Val Loss = {val_loss:.4f}, Val Accuracy = {val_acc:.4f}")
+        wandb.log({"train_accuracy":train_acc,"val_accuracy":val_acc,"train_loss":epoch_loss,"val_loss":val_loss,"epoch":epoch+1})
+
 
 def wandb_run_experiment(args):
+    print(args)
     wandb_entity=args.wandb_entity
     wandb_project=args.wandb_project
     dataset=args.dataset 
