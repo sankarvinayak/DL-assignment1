@@ -161,7 +161,7 @@ def train_model(dataset_name,num_hidden_layers,hidden_layer_size,num_epochs,acti
         class_names=[str(i) for i in  range(10)]
       print("Logging confusion matrix")
       fig=create_conf_mat(y_test,y_pred,class_names,"Confusion Matrix") 
-      wandb.log({"plot": wandb.Plotly(fig)})
+      wandb.log({f"Confusion matrix {dataset_name}": wandb.Plotly(fig)})
       
     
     return model
