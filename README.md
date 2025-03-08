@@ -58,8 +58,8 @@ For more information follow the `DL_assignment_1.ipynb` file in which each step 
 ### Arguments supported
 | Name | Default Value | Description |
 | :---: | :-------------: | :----------- |
-| `-wp`, `--wandb_project` | myprojectname | Project name used to track experiments in Weights & Biases dashboard |
-| `-we`, `--wandb_entity` | myname  | Wandb Entity used to track experiments in the Weights & Biases dashboard. |
+| `-wp`, `--wandb_project` | 6401_Assignment1 | Project name used to track experiments in Weights & Biases dashboard |
+| `-we`, `--wandb_entity` | cs24m041  | Wandb Entity used to track experiments in the Weights & Biases dashboard. |
 | `-d`, `--dataset` | fashion_mnist | choices:  ["mnist", "fashion_mnist"] |
 | `-e`, `--epochs` | 14 |  Number of epochs to train neural network.|
 | `-b`, `--batch_size` | 64 | Batch size used to train neural network. | 
