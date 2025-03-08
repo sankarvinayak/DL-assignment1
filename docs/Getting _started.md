@@ -4,7 +4,7 @@ Clone the repository
 ```
 git clone https://github.com/sankarvinayak/DL-assignment1.git
 ```
-or Download the [zipfile][https://github.com/sankarvinayak/DL-assignment1/archive/refs/heads/main.zip] and extract in to current directry
+or Download the [zipfile](https://github.com/sankarvinayak/DL-assignment1/archive/refs/heads/main.zip) and extract in to current directry
 ```
 cd DL-assignment1
 python train.py --wandb_entity myname --wandb_project myprojectname
@@ -110,4 +110,4 @@ Now it contains the following functions
 - `run_wandb_sweep`
 - `wandb_run_experiment`
 
-[Creating and getting the data](creating_network.md)
+[Creating Network and Getting the Data](creating_network.md)

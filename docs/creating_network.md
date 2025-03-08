@@ -1,4 +1,4 @@
-# Creating and getting the data
+# Creating Network and getting the data
 ## Creating network
 The network constring of multiple fully conneted layer 
 
@@ -24,7 +24,9 @@ Alternatively one can make use of the `construct_network` function which given t
 
 ## Getting data
 As of now the dataset using are limited to fashion mnist and mnist which are loaded from the keras directly.Also one can make ue of the function `get_data` given the dataset name(fmnist or mnist) will return the flattend verision of the trainng and testing as well as the one hot encoded version of the training labels which will be needed during the training
-
+```
+x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name="mnist")
+```
 Alternatively one can use any other dataset maintining the input and output shape of the netowrk and matching the dimensions of other function without any issue
 
 [Training the network](Training.md)

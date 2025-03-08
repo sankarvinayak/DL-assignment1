@@ -12,7 +12,7 @@ Clone the repository
 ```
 git clone https://github.com/sankarvinayak/DL-assignment1.git
 ```
-or Download the [zipfile][https://github.com/sankarvinayak/DL-assignment1/archive/refs/heads/main.zip] and extract in to current directry
+or Download the [zipfile](https://github.com/sankarvinayak/DL-assignment1/archive/refs/heads/main.zip) and extract in to current directry
 ```
 cd DL-assignment1
 python train.py --wandb_entity myname --wandb_project myprojectname
@@ -53,6 +53,6 @@ You can run the full set of sweep by running the `run_wandb_sweep(entity,project
 
 ##### Without loggind into wandb
 
-You can directly use the function provided `train_model` with all the necessary arguments will return a trained model
+You can directly use the function provided `train_model` with all the necessary arguments will return a trained model.For more information checkout the [docs](./docs/Getting%20_started.md)
 
 
