@@ -23,6 +23,8 @@ def vanilla_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1
     layer.bias-=layer.u_b
   return batch_loss
 
+
+
 def momentum_based_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,lmda:float=0):
   """
   Momentum based Gradient Descent
@@ -36,6 +38,8 @@ def momentum_based_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:fl
   Directly calls vanilla gradient descent with momentum
   """
   return vanilla_gradient_descent(X_batch=X_batch,Y_batch=Y_batch,model=model,loss_fn=loss_fn,eta=eta,beta=beta,lmda=lmda)
+
+
 
 def nestrov_accelerated_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,lmda:float=0):
   """
@@ -69,6 +73,8 @@ def nestrov_accelerated_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,e
   return batch_loss
 
 
+
+
 def rmsprop(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,lmda:float=0,epsilon:float=0.000001):
   """
   RMSProp
@@ -92,6 +98,8 @@ def rmsprop(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,l
     layer.weights-=eta*(grad_w/(np.sqrt(layer.v_w)+epsilon))
     layer.bias-=eta*(grad_b/(np.sqrt(layer.v_b)+epsilon))
   return batch_loss
+
+
 
 def adam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,beta2=0.999,lmda:float=0,epsilon:float=0.000001):
   """
@@ -127,6 +135,8 @@ def adam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,bet
     layer.weights-=eta*(m_w_hat/(np.sqrt(v_w_hat)+epsilon))
     layer.bias-=eta*(m_b_hat/(np.sqrt(v_b_hat)+epsilon))
   return batch_loss
+
+
 
 def nadam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,beta2=0.999,lmda:float=0,epsilon:float=0.000001):
   """

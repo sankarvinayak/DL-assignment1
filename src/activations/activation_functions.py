@@ -1,6 +1,7 @@
 from abc import abstractmethod
 import numpy as np
-class ActivationFn:
+
+class ActivationFn:#Base class on which every activation function is based of
   @abstractmethod
   def forward(self,X):
       pass

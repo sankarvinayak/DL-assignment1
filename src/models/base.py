@@ -3,15 +3,21 @@ import numpy as np
 from ..activations import *
 from ..loss.loss_functions import MSE, CrossEntropy
 
+
+
 def one_hot_encode(labels, num_classes):
   """convert output label into one hot encoded format"""
   return np.eye(num_classes)[labels]
+
+
 
 def xavier(n_inputs,n_output):
   """Best for tanh and sigmoid
   introduced in Understanding the difficulty of training deep feedforward neural networks"""
   limit = np.sqrt(6 / (n_inputs + n_output))
   return np.random.uniform(-limit, limit, (n_inputs, n_output))
+
+
 
 def mse_softmax_grad(y_hat,y_pred):
   """Gradient of softmax with squared error loss with respect to a_L the preactivaton of last layer
@@ -20,7 +26,10 @@ def mse_softmax_grad(y_hat,y_pred):
   sum=np.sum(err*y_hat,axis=1,keepdims=True)
   return y_hat*(err-sum)
 
+
+
 class fc_layer:
+  """Fully connected network layer"""
   def __init__(self,n_inputs:int,n_output:int,activation_fn:ActivationFn=Sigmoid(),initialization="random"):
     """Initialize the values of the network like weights,bias,momentum values u,sum values s etc
     inputs
@@ -66,7 +75,10 @@ class fc_layer:
     self.grad_w=np.zeros_like(self.weights)
     self.grad_b=np.zeros_like(self.bias)
 
+
+
 class Network:
+  """Base class for all class you can stack different fc_layer to create a neural network"""
   def __init__(self):
     """Initialize with an empty list so that layers can be appended to it similar implimentation is availivale in tf and pytorch"""
     self.layers=[]

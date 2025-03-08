@@ -1,4 +1,4 @@
-import argparse
+import argparse # a widely used module for easy handling of commanline parameters
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-we', '--wandb_entity', type=str, default='cs24m041')

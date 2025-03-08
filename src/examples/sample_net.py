@@ -1,10 +1,11 @@
 import numpy as np
-from activations.activation_functions import Softmax
-from loss.loss_functions import CrossEntropy
+
+
 from utils.helper import construct_network, get_data, train_loop
 
 
 def main():
+    #Creates a network and train it as a demo
     np.random.seed(41) # help in reproducability
     x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name="fmnist")
     inp_shp=x_train_flat.shape[1]

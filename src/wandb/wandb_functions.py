@@ -1,15 +1,14 @@
 from ..loss.loss_functions import CrossEntropy
 from ..optimizers.optimization_functions import adam, momentum_based_gradient_descent, nadam, nestrov_accelerated_gradient_descent, rmsprop, vanilla_gradient_descent
-from ..utils.helper import construct_network, get_data, train_loop, train_model
+from ..utils.helper import construct_network, get_data, train_model
 from ..utils.metrics import accuracy
 import wandb
 import numpy as np
 from keras.datasets import fashion_mnist,mnist
 
-import wandb
 
-
-def wandb_log_sample_images(project: str, entity: str, dataset_name: str):
+def wandb_log_sample_images( dataset_name: str):
+    """Based on the dataset name passed select the first image from all class and logs it into wandb(assume wandb initialized elsewhere)"""
     print(f"Logging sample image from {dataset_name} into wandb")
     if dataset_name.lower() == "fmnist":
         (x_train, y_train), _ = fashion_mnist.load_data()
@@ -112,6 +111,7 @@ def wand_train(config=None):
 
 
 def wandb_run_experiment(args):
+    """Take inputs from the command line arguments and run a single run based on the parameters passed and logs in the wandb"""
     print(args)
     wandb_entity=args.wandb_entity
     wandb_project=args.wandb_project
@@ -154,7 +154,7 @@ def wandb_run_experiment(args):
     config['activation']=activation
 
     run=wandb.init(entity=wandb_entity,project=wandb_project,config=config)
-    wandb_log_sample_images(wandb_project,wandb_entity,dataset)
+    wandb_log_sample_images(dataset)
     np.random.seed(41)
     train_model(dataset_name=dataset,num_hidden_layers=num_layers,hidden_layer_size=hidden_size,num_epochs=epochs,activation_function=activation,batch_size=batch_size,optimizer=optimizer,lr=lr,lmda=lmda,momentum=momentum,beta=beta,beta1=beta1,beta2=beta2,epsilon=epsilon,weight_initialisation=weight_init,logging=True)
     run.finish()
