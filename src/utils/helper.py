@@ -155,6 +155,7 @@ def train_model(dataset_name,num_hidden_layers,hidden_layer_size,num_epochs,acti
     print("Training finished")
     if logging:
       y_pred=np.argmax( model.forward_pass_network(x_test_flat),axis=1)
+      print(f"Test accuracy:{np.mean(y_pred==y_test)*100}%")
       if dataset_name=='fmnist':
         class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
       elif dataset_name=='mnist':
