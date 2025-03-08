@@ -1,7 +1,8 @@
-!!! Work under progresss !!!
 # DL-assignment1
 This repository is created for the Assignment 1 of DA6401 Deeplearning cousrse by Mithesh M Kaphra at Indian Institure of technology Madras by Sankar Vinayak E P\
 This repository contains code as well as experiments done on the fasion mnist dataset\
+This is an implimentation of neural network framework taking inspiration(not copied) from existing framework like Pytorch and Tensorfolow primarily using numpy
+It make use of [Weights and bias](https://wandb.ai) framework for experiment tracking. To test out the code given in this either you can make use of the jupyter notebook or use the python file given
 ### Instructions on running the code
 ```
 python train.py --wandb_entity myname --wandb_project myprojectname
@@ -50,7 +51,7 @@ For more information follow the `DL_assignment_1.ipynb` file in which each step 
 - CrossEntropy
 - Mean Squared error
 
-### Arguments to be supported
+### Arguments supported
 | Name | Default Value | Description |
 | :---: | :-------------: | :----------- |
 | `-wp`, `--wandb_project` | myprojectname | Project name used to track experiments in Weights & Biases dashboard |
@@ -71,5 +72,5 @@ For more information follow the `DL_assignment_1.ipynb` file in which each step 
 | `-nhl`, `--num_layers` | 1 | Number of hidden layers used in feedforward neural network. | 
 | `-sz`, `--hidden_size` | 4 | Number of hidden neurons in a feedforward layer. |
 | `-a`, `--activation` | sigmoid | choices:  ["identity", "sigmoid", "tanh", "ReLU"] |
-
 <br>
+Note: Even after entering the entity name you may be prompted to create or login with wandb at that point select existing account(2) and enter your private key to continue
