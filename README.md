@@ -58,8 +58,8 @@ For more information follow the `DL_assignment_1.ipynb` file in which each step 
 ### Arguments supported
 | Name | Default Value | Description |
 | :---: | :-------------: | :----------- |
-| `-wp`, `--wandb_project` | myprojectname | Project name used to track experiments in Weights & Biases dashboard |
-| `-we`, `--wandb_entity` | myname  | Wandb Entity used to track experiments in the Weights & Biases dashboard. |
+| `-wp`, `--wandb_project` | 6401_Assignment1 | Project name used to track experiments in Weights & Biases dashboard |
+| `-we`, `--wandb_entity` | cs24m041  | Wandb Entity used to track experiments in the Weights & Biases dashboard. |
 | `-d`, `--dataset` | fashion_mnist | choices:  ["mnist", "fashion_mnist"] |
 | `-e`, `--epochs` | 14 |  Number of epochs to train neural network.|
 | `-b`, `--batch_size` | 64 | Batch size used to train neural network. | 
@@ -72,7 +72,7 @@ For more information follow the `DL_assignment_1.ipynb` file in which each step 
 | `-beta2`, `--beta2` | 0.999 | Beta2 used by adam and nadam optimizers. |
 | `-eps`, `--epsilon` | 0.000001 | Epsilon used by optimizers. |
 | `-w_d`, `--weight_decay` | .0 | Weight decay used by optimizers. |
-| `-w_i`, `--weight_init` | random | choices:  ["random", "Xavier"] | 
+| `-w_i`, `--weight_init` | Xavier | choices:  ["random", "Xavier"] | 
 | `-nhl`, `--num_layers` | 4 | Number of hidden layers used in feedforward neural network. | 
 | `-sz`, `--hidden_size` | 128 | Number of hidden neurons in a feedforward layer. |
 | `-a`, `--activation` | ReLU | choices:  ["identity", "sigmoid", "tanh", "ReLU"] |
