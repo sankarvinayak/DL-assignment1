@@ -1,5 +1,5 @@
-# DL-assignment1
-This repository is created for the Assignment 1 of DA6401 Deeplearning cousrse by Mithesh M Kaphra at Indian Institure of technology Madras by Sankar Vinayak E P\
+# DL-assignment 1
+This repository is created for the Assignment 1 of DA6401 Introduction to Deep Learning cousrse(Mitesh M. Khapra Indian Institure of technology Madras) by Sankar Vinayak E P\
 This repository contains code as well as experiments done on the fasion mnist dataset\
 This is an implimentation of neural network framework taking inspiration(not copied) from existing framework like Pytorch and Tensorfolow primarily using numpy
 It make use of [Weights and bias](https://wandb.ai) framework for experiment tracking. To test out the code given in this either you can make use of the jupyter notebook or use the python file given
