@@ -109,12 +109,40 @@ def wand_train(config=None):
         print(f"Epoch {epoch}: Loss = {epoch_loss:.4f}, Train Accuracy = {train_acc:.4f}, Val Loss = {val_loss:.4f}, Val Accuracy = {val_acc:.4f}")
         wandb.log({"train_accuracy":train_acc,"val_accuracy":val_acc,"train_loss":epoch_loss,"val_loss":val_loss,"epoch":epoch+1})
 
+def run_wandb_sweep(entity,project):
+    sweep_config = {
+        "method": "bayes",
+        "metric": {
+            "name": "val_accuracy",
+            "goal": "maximize"
+        },
+        "parameters": {
+            "dataset": {"values": ["fmnist"]},
+            "epochs": {"values": [5,10]},
+            "num_hidden_layers": {"values": [3,4,5]},
+            "hidden_layer_size": {"values": [32,64,128]},
+            "weight_decay": {"values": [0.0,0.0005,0.5]},
+            "learning_rate": {"values": [0.001, 0.0001]},
+            "batch_size": {"values": [64,32,16]},
+            "weight_initialisation": {"values": [ "Xavier","random"]},
+            "activation_function": {"values": [ "ReLU", "tanh","sigmoid"]},
+            "optimizer": {"values": ["adam", "nadam","nesterov", "rmsprop","sgd","momentum"]},
+        }
+    }
+    sweep_id = wandb.sweep(sweep_config, project=project,entity=entity)
+    print("Sweep ID:", sweep_id)
+    wandb.agent(sweep_id, wand_train,count=10)
+
+
+
+
+
 
 def wandb_run_experiment(args):
     """Take inputs from the command line arguments and run a single run based on the parameters passed and logs in the wandb"""
     # print(args)
     print("Run configuration")
-    
+
     wandb_entity=args.wandb_entity
     wandb_project=args.wandb_project
     dataset=args.dataset 

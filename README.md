@@ -78,3 +78,5 @@ For more information follow the `DL_assignment_1.ipynb` file in which each step 
 | `-a`, `--activation` | ReLU | choices:  ["identity", "sigmoid", "tanh", "ReLU"] |
 <br>
 Note: Even after entering the entity name you may be prompted to create or login with wandb at that point select existing account(2) and enter your private key to continue
+
+You can run the full set of sweep by running the `run_wandb_sweep(entity,project)` inside the `wandb_function.py` file
