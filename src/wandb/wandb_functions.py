@@ -112,7 +112,9 @@ def wand_train(config=None):
 
 def wandb_run_experiment(args):
     """Take inputs from the command line arguments and run a single run based on the parameters passed and logs in the wandb"""
-    print(args)
+    # print(args)
+    print("Run configuration")
+    
     wandb_entity=args.wandb_entity
     wandb_project=args.wandb_project
     dataset=args.dataset 
@@ -131,20 +133,31 @@ def wandb_run_experiment(args):
     num_layers=args.num_layers
     hidden_size=args.hidden_size
     activation=args.activation
-    config={}
+
+    print(f"Wandb entity:{wandb_entity},wandb project:{wandb_project}")
+    print(f"\nNetwork architecture \n\nweight decay rate:{lmda}\n Number of hidden layers{num_layers}\n Size nodes in each hidden layer:{hidden_size}\n Activation function{activation}")
+    print(f"\nTraining\n\nDataset:{dataset}\n Epochs:{epochs}\n batch size:{batch_size}\n loss function:{loss}\n Learning rate:{lr}\n Optimizer:{optimizer}\n")
+    
     if dataset=="fashion_mnist":
         dataset='fmnist'
+
+    config={}
+    
     config['dataset']=dataset
+   
     config['epochs']=epochs
     config['batch_size']=batch_size
     config['loss']=loss
     config['lr']=lr
     config['optimizer']=optimizer
     if optimizer=="momentum" or optimizer=="nag":
+        print(f"momentum:{momentum}")
         config['momentum']=momentum
     elif optimizer=="rmsprop":
+        print(f"beta:{beta}")
         config['beta']=beta
     elif optimizer=='adam' or optimizer=='nadam':
+        print(f"beta1:{beta1}\nbeta2:{beta2}\n epsilon{epsilon}")
         config["beta1"]=beta1
         config["beta2"]=beta2
         config["epsilon"]=epsilon
@@ -154,9 +167,13 @@ def wandb_run_experiment(args):
     config['activation']=activation
 
     run=wandb.init(entity=wandb_entity,project=wandb_project,config=config)
+
     wandb_log_sample_images(dataset)
+
     np.random.seed(41)
     train_model(dataset_name=dataset,num_hidden_layers=num_layers,hidden_layer_size=hidden_size,num_epochs=epochs,activation_function=activation,batch_size=batch_size,optimizer=optimizer,lr=lr,lmda=lmda,momentum=momentum,beta=beta,beta1=beta1,beta2=beta2,epsilon=epsilon,weight_initialisation=weight_init,logging=True)
+    
     run.finish()
+
     print("Run finished,check wandb for the data")
 
