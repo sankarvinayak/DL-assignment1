@@ -1,12 +1,54 @@
 !!! Work under progresss !!!
 # DL-assignment1
-This repository is created for the Assignment 1 of DA6401 Deeplearning cousrse by Mithesh M Kaphra at Indian Institure of technology Madras by Sankar Vinayak E P\\
-This repository contains code as well as experiments done on the fasion mnist dataset\\
+This repository is created for the Assignment 1 of DA6401 Deeplearning cousrse by Mithesh M Kaphra at Indian Institure of technology Madras by Sankar Vinayak E P\
+This repository contains code as well as experiments done on the fasion mnist dataset\
 ### Instructions on running the code
-
 ```
 python train.py --wandb_entity myname --wandb_project myprojectname
 ```
+For more information follow the `DL_assignment_1.ipynb` file in which each step is described more clearly 
+### Directory structure
+```
+├── DL_assignment_1.ipynb
+├── README.md
+├── src
+│   ├── activations
+│   │   └── activation_functions.py
+│   ├── cli
+│   │   └── options.py
+│   ├── examples
+│   │   └── sample_net.py
+│   ├── loss
+│   │   └── loss_functions.py
+│   ├── models
+│   │   └── base.py
+│   ├── optimizers
+│   │   └── optimization_functions.py
+│   ├── utils
+│   │   ├── helper.py
+│   │   └── metrics.py
+│   └── wandb
+│       └── wandb_functions.py
+└── train.py
+```
+##### Included activation functions
+- Sigmoid
+- Relu
+- Tanh
+- Linear
+##### Included optimizer functions
+- Stochastic gradient descnet
+- Momentum based gradient descnet
+- Nestrov accilerated gradient descent
+- RMSProp
+- Adam
+- Nadam
+##### Included initilization methods
+- Xavier
+- Random
+##### Included loss functions
+- CrossEntropy
+- Mean Squared error
 
 ### Arguments to be supported
 | Name | Default Value | Description |

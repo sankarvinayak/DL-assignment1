@@ -5,7 +5,7 @@ def parse_args():
     parser.add_argument('-wp', '--wandb_project', type=str, default='6401_Assignment1')
     parser.add_argument('-d', '--dataset', type=str, default='fashion_mnist',choices=["mnist", "fashion_mnist"])
     parser.add_argument('-e', '--epochs', type=int, default=14)
-    parser.add_argument('-b', '--batch_size', type=int, default=4)
+    parser.add_argument('-b', '--batch_size', type=int, default=64)
     parser.add_argument('-l', '--loss', type=str, default='cross_entropy',choices=["mean_squared_error", "cross_entropy"])
     parser.add_argument('-o', '--optimizer', type=str, default='adam',choices=["sgd", "momentum", "nag", "rmsprop", "adam", "nadam"])
     parser.add_argument('-w_i', '--weight_init', type=str, default='Xavier',choices=["random", "Xavier"])
