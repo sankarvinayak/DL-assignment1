@@ -8,6 +8,7 @@ This is an implimentation of neural network framework taking inspiration(not cop
 It make use of [Weights and bias](https://wandb.ai) framework for experiment tracking. To test out the code given in this either you can make use of the jupyter notebook or use the python file given
 
 ### Instructions on running the code
+Clone the repository
 ```
 git clone https://github.com/sankarvinayak/DL-assignment1.git
 ```
@@ -23,51 +24,8 @@ python train.py -wp "cli_try" -we "cs24m041-iit-madras" -b 32 -e 10 -o "nadam" -
 The above code will log the following data in the wandb
 ![Wandb interface](media/wandb_demo.png )
 For more information follow the `DL_assignment_1.ipynb` file in which each step is described more clearly 
-### Directory structure
-```
-├── DL_assignment_1.ipynb
-├── media
-│   └── wandb_demo.png
-├── README.md
-├── src
-│   ├── activations
-│   │   └── activation_functions.py
-│   ├── cli
-│   │   └── options.py
-│   ├── examples
-│   │   └── sample_net.py
-│   ├── loss
-│   │   └── loss_functions.py
-│   ├── models
-│   │   └── base.py
-│   ├── optimizers
-│   │   └── optimization_functions.py
-│   ├── utils
-│   │   ├── helper.py
-│   │   └── metrics.py
-│   └── wandb
-│       └── wandb_functions.py
-└── train.py
-```
-##### Included activation functions
-- Sigmoid
-- Relu
-- Tanh
-- Linear
-##### Included optimizer functions
-- Stochastic gradient descnet
-- Momentum based gradient descnet
-- Nestrov accilerated gradient descent
-- RMSProp
-- Adam
-- Nadam
-##### Included initilization methods
-- Xavier
-- Random
-##### Included loss functions
-- CrossEntropy
-- Mean Squared error
 
+for detailed documentation chechout the [docs](./docs/Getting%20_started.md)
 ### Arguments supported
 | Name | Default Value | Description |
 | :---: | :-------------: | :----------- |
@@ -91,5 +49,10 @@ For more information follow the `DL_assignment_1.ipynb` file in which each step 
 | `-a`, `--activation` | ReLU | choices:  ["identity", "sigmoid", "tanh", "ReLU"] |
 <br>
 Note: Even after entering the entity name you may be prompted to create or login with wandb at that point select existing account(2) and enter your private key to continue
-
 You can run the full set of sweep by running the `run_wandb_sweep(entity,project)` inside the `wandb_function.py` file
+
+##### Without loggind into wandb
+
+You can directly use the function provided `train_model` with all the necessary arguments will return a trained model
+
+

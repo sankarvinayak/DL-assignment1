@@ -109,9 +109,9 @@ def wand_train(config=None):
         print(f"Epoch {epoch}: Loss = {epoch_loss:.4f}, Train Accuracy = {train_acc:.4f}, Val Loss = {val_loss:.4f}, Val Accuracy = {val_acc:.4f}")
         wandb.log({"train_accuracy":train_acc,"val_accuracy":val_acc,"train_loss":epoch_loss,"val_loss":val_loss,"epoch":epoch+1})
 
-def run_wandb_sweep(entity,project):
+def run_wandb_sweep(entity,project,method:str="bayes",count=10):
     sweep_config = {
-        "method": "bayes",
+        "method": method,
         "metric": {
             "name": "val_accuracy",
             "goal": "maximize"
@@ -131,7 +131,7 @@ def run_wandb_sweep(entity,project):
     }
     sweep_id = wandb.sweep(sweep_config, project=project,entity=entity)
     print("Sweep ID:", sweep_id)
-    wandb.agent(sweep_id, wand_train,count=10)
+    wandb.agent(sweep_id, wand_train,count=count)
 
 
 

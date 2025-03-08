@@ -64,6 +64,7 @@ def mpl2plotly(cmap, entries=10):
   return cs
 
 def create_conf_mat(y_true:list,y_pred:list,class_labels:list,title="Confusion Matrix"):
+  """Create confusion matrix plotly object input true_value,prediciton,class labels return figure"""
   n=len(class_labels)
   cm=np.zeros((n,n),dtype=int)
   for t,p in zip(y_true,y_pred): cm[int(t),int(p)] += 1
@@ -89,7 +90,27 @@ def create_conf_mat(y_true:list,y_pred:list,class_labels:list,title="Confusion M
 
 
 
-def train_model(dataset_name,num_hidden_layers,hidden_layer_size,num_epochs,activation_function,weight_initialisation,batch_size,optimizer,lr,lmda,momentum=0.9,beta=0.9,beta1=0.9,beta2=0.999,epsilon=0.000001,logging=False)->Network:
+def train_model(dataset_name:str="fmnist",num_hidden_layers:int=4,hidden_layer_size:int=128,num_epochs:int=10,activation_function:str="ReLU",weight_initialisation:str="Xavier",batch_size:int=64,optimizer:str="adam",lr:float=0.001,lmda:float=0.0,momentum=0.9,beta=0.9,beta1=0.9,beta2=0.999,epsilon=0.000001,logging=False)->Network:
+  """Function which does all together
+  inputs:
+  dataset_name:str="fmnist" fashion mnist dataset other option mnist
+  num_hidden_layers:int=4,
+  hidden_layer_size:int=128,
+  num_epochs:int=10,
+  activation_function:str="ReLU" other options identity,sigmoid,tanh
+  weight_initialisation:str="Xavier" other option random
+  batch_size:int=64
+  optimizer:str="adam" other options sgd,nag,rmsprop,nadam
+  lr:float=0.001 learning rate
+  lmda:float=0.0 weight decay
+  momentum=0.9 for momentum based and nag
+  beta=0.9 for rmsprop
+  beta1=0.9 for adam and nadam
+  beta2=0.999 for adam and nadam
+  epsilon=0.000001 for adam and nadam
+  logging=False whether you want to log data into WandB or not
+  return trained model
+  """
   np.random.seed(41)
   print("Getting data")
   x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name=dataset_name)
