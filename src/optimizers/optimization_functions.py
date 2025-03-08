@@ -169,7 +169,7 @@ def nadam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,be
     layer.v_b=(beta2*layer.v_b)+((1-beta2)*(grad_b**2))
     v_w_hat=layer.v_w/(1-beta2**model.t)
     v_b_hat=layer.v_b/(1-beta2**model.t)
-    layer.weights-=((eta/(np.sqrt(v_w_hat)+epsilon)*((beta1*m_w_hat)+(((1-beta1)*grad_w)/(1-beta1)))))
-    layer.bias-=((eta/(np.sqrt(v_b_hat)+epsilon)*((beta1*m_b_hat)+(((1-beta1)*grad_b)/(1-beta1)))))
+    layer.weights-=((eta/(np.sqrt(v_w_hat)+epsilon)*((beta1*m_w_hat)+(((1-beta1)*grad_w)/(1-beta1**model.t)))))
+    layer.bias-=((eta/(np.sqrt(v_b_hat)+epsilon)*((beta1*m_b_hat)+(((1-beta1)*grad_b)/(1-beta1**model.t)))))
   return batch_loss
 
