@@ -21,11 +21,13 @@ example
 python train.py -wp "cli_try" -we "cs24m041-iit-madras" -b 32 -e 10 -o "nadam" -lr 0.0001 -w_d 0.0005 -w_i "random" -sz 64 -nhl 3 -a "ReLU"
 ```
 The above code will log the following data in the wandb
-![Wandb interface](media/Screenshot%202025-03-08%20at%2012-42-09%20serene-durian-7%20cli_try%20–%20Weights%20&%20Biases.png )
+![Wandb interface](media/wandb_demo.png )
 For more information follow the `DL_assignment_1.ipynb` file in which each step is described more clearly 
 ### Directory structure
 ```
 ├── DL_assignment_1.ipynb
+├── media
+│   └── wandb_demo.png
 ├── README.md
 ├── src
 │   ├── activations
