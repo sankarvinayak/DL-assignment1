@@ -154,10 +154,9 @@ def nadam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,be
   batch_loss_vec=loss_fn(Y_hat,Y_batch)
   batch_loss=np.mean(batch_loss_vec)
   model.calculate_grad(Y_hat,Y_batch)
-  if hasattr(model,"t"):
-    model.t+=1
-  else:
-    model.t=1
+  if not hasattr(model, "t"):
+      model.t = 0
+  model.t += 1
   for layer in model.layers:
     grad_w=layer.grad_w+(lmda*layer.weights)
     grad_b=layer.grad_b+(lmda*layer.bias)
