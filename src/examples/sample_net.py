@@ -1,7 +1,7 @@
 import numpy as np
 
 
-from utils.helper import construct_network, get_data, train_loop
+from ..utils.helper import construct_network, get_data, train_loop
 
 
 def main():
