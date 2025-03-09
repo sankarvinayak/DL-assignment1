@@ -214,5 +214,111 @@ def wandb_run_experiment(args):
     
     run.finish()
 
-    print("Run finished,check wandb for the data")
+
+def wand_train_mse_ce(config=None):
+  """loop which takes input from the wanb and run the model evalueate and send log to server"""
+
+  with wandb.init(config=config):
+
+    config = wandb.config
+
+    num_hidden_layers=config.num_hidden_layers
+    hidden_layer_size=config.hidden_layer_size
+    lmda=config.weight_decay
+    optimizer=config.optimizer
+    weight_initialisation=config.weight_initialisation
+    activation_function=config.activation_function
+    lr=config.learning_rate
+    num_epochs=config.epochs
+    batch_size=config.batch_size
+    dataset_name=config.dataset
+
+    loss_fn=config.loss_fn
+
+    x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name=dataset_name)
+    inp_shp=x_train_flat.shape[1]
+    out_shp=np.unique(y_train).shape[0]
+    np.random.seed(41)
+    model=construct_network(inp_size=inp_shp,num_layers=num_hidden_layers,layer_size=hidden_layer_size,out_size=out_shp,activation_f=activation_function,weight_initialisation=weight_initialisation)
+
+    n_samples=x_train_flat.shape[0]
+    if loss_fn=="CE":
+      print("Cross entropy")
+      loss_fn=CrossEntropy
+    else:
+      print("Mean squared error")
+      loss_fn=MSE
+    n_samples = x_train_flat.shape[0]
+
+    for epoch in range(num_epochs):
+        permutation = np.random.permutation(n_samples)
+        X_shuffled = x_train_flat[permutation]
+        Y_shuffled = one_hot_y_train[permutation]
+        epoch_loss = 0.0
+        num_batches = 0
+
+        for i in range(0, n_samples, batch_size):
+            batch_end = min(i + batch_size, n_samples)
+            X_batch = X_shuffled[i:batch_end]
+            Y_batch = Y_shuffled[i:batch_end]
+            model.zero_grad()
+            if optimizer =="sgd" :
+                batch_loss = vanilla_gradient_descent(X_batch, Y_batch, model, loss_fn,  eta=lr,lmda=lmda)
+            elif optimizer == "momentum":
+                batch_loss = momentum_based_gradient_descent(X_batch, Y_batch, model, loss_fn,  eta=lr,lmda=lmda)
+            elif optimizer == "nesterov":
+                batch_loss = nestrov_accelerated_gradient_descent(X_batch, Y_batch, model, loss_fn,  eta=lr,lmda=lmda)
+            elif optimizer == "rmsprop":
+                batch_loss = rmsprop(X_batch, Y_batch, model, loss_fn, eta=lr,  lmda=lmda)
+            elif optimizer == "adam":
+                batch_loss = adam(X_batch, Y_batch, model, loss_fn, eta=lr, lmda=lmda)
+            elif optimizer == "nadam":
+                batch_loss = nadam(X_batch, Y_batch, model, loss_fn, eta=lr,  lmda=lmda)
+
+            epoch_loss += batch_loss
+            num_batches += 1
+
+        epoch_loss /= num_batches
+        y_pred = model.forward_pass_network(x_train_flat)
+        train_acc = accuracy(y_train, y_pred)
+        test_pred = model.forward_pass_network(x_test_flat)
+        val_loss=loss_fn(test_pred,one_hot_y_test)
+        val_loss=np.mean(val_loss)
+        val_acc=accuracy(y_test,test_pred)
+
+        print(f"Epoch {epoch}: Loss = {epoch_loss:.4f}, Train Accuracy = {train_acc:.4f} val_loss:{val_loss:.4f} val_acc:{val_acc:.4f}")
+        wandb.log({
+            "train_accuracy": train_acc,
+            "val_accuracy": val_acc,
+            "train_loss": epoch_loss,
+            "val_loss": val_loss,
+            "epoch": epoch+1
+        })
+
+
+def compare_mse_ce():
+    
+    sweep_config = {
+        "method": "bayes",
+        "metric": {
+            "name": "val_accuracy",
+            "goal": "maximize"
+        },
+        "parameters": {
+            "dataset": {"values": ["fmnist"]},
+            "epochs": {"values": [10,5]},
+            "num_hidden_layers": {"values": [5,4,3]},
+            "hidden_layer_size": {"values": [128,64,32]},
+            "weight_decay": {"values": [0.0,0.0005]},
+            "learning_rate": {"values": [0.001, 0.0001]},
+            "optimizer": {"values": ["adam", "nadam","sgd", "momentum", "nesterov", "rmsprop"]},
+            "batch_size": {"values": [64,32,16]},
+            "weight_initialisation": {"values": [ "Xavier","random"]},
+            "activation_function": {"values": [ "ReLU","sigmoid", "tanh"]},
+            "loss_fn": {"values": ["MSE","CE"]},
+        }
+    }
+    sweep_id = wandb.sweep(sweep_config, project="6401_Assignment1_MSE_vs_CE",entity="cs24m041-iit-madras")
+    wandb.agent(sweep_id, wand_train_mse_ce,count=10)
+    
 
