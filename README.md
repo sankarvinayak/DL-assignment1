@@ -32,11 +32,11 @@ for detailed documentation chechout the [docs](./docs/Getting%20_started.md)
 | `-wp`, `--wandb_project` | 6401_Assignment1 | Project name used to track experiments in Weights & Biases dashboard |
 | `-we`, `--wandb_entity` | cs24m041  | Wandb Entity used to track experiments in the Weights & Biases dashboard. |
 | `-d`, `--dataset` | fashion_mnist | choices:  ["mnist", "fashion_mnist"] |
-| `-e`, `--epochs` | 14 |  Number of epochs to train neural network.|
+| `-e`, `--epochs` | 20 |  Number of epochs to train neural network.|
 | `-b`, `--batch_size` | 64 | Batch size used to train neural network. | 
 | `-l`, `--loss` | cross_entropy | choices:  ["mean_squared_error", "cross_entropy"] |
 | `-o`, `--optimizer` | adam | choices:  ["sgd", "momentum", "nag", "rmsprop", "adam", "nadam"] | 
-| `-lr`, `--learning_rate` | 0.001 | Learning rate used to optimize model parameters | 
+| `-lr`, `--learning_rate` | 7e-4 | Learning rate used to optimize model parameters | 
 | `-m`, `--momentum` | 0.9 | Momentum used by momentum and nag optimizers. |
 | `-beta`, `--beta` | 0.9 | Beta used by rmsprop optimizer | 
 | `-beta1`, `--beta1` | 0.9 | Beta1 used by adam and nadam optimizers. | 
@@ -46,7 +46,7 @@ for detailed documentation chechout the [docs](./docs/Getting%20_started.md)
 | `-w_i`, `--weight_init` | Xavier | choices:  ["random", "Xavier"] | 
 | `-nhl`, `--num_layers` | 4 | Number of hidden layers used in feedforward neural network. | 
 | `-sz`, `--hidden_size` | 128 | Number of hidden neurons in a feedforward layer. |
-| `-a`, `--activation` | ReLU | choices:  ["identity", "sigmoid", "tanh", "ReLU"] |
+| `-a`, `--activation` | tanh | choices:  ["identity", "sigmoid", "tanh", "ReLU"] |
 <br>
 Note: Even after entering the entity name you may be prompted to create or login with wandb at that point select existing account(2) and enter your private key to continue
 You can run the full set of sweep by running the `run_wandb_sweep(entity,project)` inside the `wandb_function.py` file
