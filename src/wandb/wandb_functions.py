@@ -10,23 +10,29 @@ from keras.datasets import fashion_mnist,mnist
 def wandb_log_sample_images( dataset_name: str):
     """Based on the dataset name passed select the first image from all class and logs it into wandb(assume wandb initialized elsewhere)"""
     print(f"Logging sample image from {dataset_name} into wandb")
+    
     if dataset_name.lower() == "fmnist":
         (x_train, y_train), _ = fashion_mnist.load_data()
         class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+    
     elif dataset_name.lower() == "mnist":
         (x_train, y_train), _ = mnist.load_data()
         class_names = [str(i) for i in range(10)]
+    
     else:
         raise ValueError("Invalid dataset name currently accepting values fmnist(fasion mnist) mnist")
+    
     sample_images = {}
     for label in range(10):
         idx = np.where(y_train == label)[0][0]
         sample_images[label] = x_train[idx]
     list_log = []
+    
     for label in sorted(sample_images.keys()):
         caption = class_names[label]
         im = sample_images[label]
         list_log.append(wandb.Image(im, caption=caption))
+    
     wandb.log({f"{dataset_name} each class samples": list_log})
     
 
@@ -85,14 +91,19 @@ def wand_train(config=None):
             model.zero_grad()
             if optimizer=="sgd":
                 batch_loss=vanilla_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            
             elif optimizer=="momentum":
                 batch_loss=momentum_based_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            
             elif optimizer=="nesterov":
                 batch_loss=nestrov_accelerated_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            
             elif optimizer=="rmsprop":
                 batch_loss=rmsprop(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            
             elif optimizer=="adam":
                 batch_loss=adam(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+            
             elif optimizer=="nadam":
                 batch_loss=nadam(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
 

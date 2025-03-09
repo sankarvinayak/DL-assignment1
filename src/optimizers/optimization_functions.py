@@ -36,6 +36,7 @@ def momentum_based_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,eta:fl
   beta:float=0.5 momentum
   lmda:float=0 decay parameter
   Directly calls vanilla gradient descent with momentum
+  Lecture 5.1 slide 41
   """
   return vanilla_gradient_descent(X_batch=X_batch,Y_batch=Y_batch,model=model,loss_fn=loss_fn,eta=eta,beta=beta,lmda=lmda)
 
@@ -51,6 +52,7 @@ def nestrov_accelerated_gradient_descent(X_batch,Y_batch,model:Network,loss_fn,e
   eta:float=0.1 learning rate
   beta:float=0.9 momentum
   lmda:float=0 decay parameter
+  Lecture 5.1 slide 51
   """
   original_params = []
   for layer in model.layers:
@@ -85,6 +87,7 @@ def rmsprop(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,l
   eta:float=0.1 learning rate
   beta:float=0.9 momentum
   lmda:float=0 decay parameter
+  Lecture 5.2 slide 19
   """
   Y_hat=model.forward_pass_network(X_batch)
   batch_loss_vec=loss_fn(Y_hat,Y_batch)
@@ -103,7 +106,8 @@ def rmsprop(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta:float=0.9,l
 
 def adam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,beta2=0.999,lmda:float=0,epsilon:float=0.000001):
   """
-  Adam optimizer
+  Adam optimizer: adaptive moments
+  Use everything rmsprop and adadelta do to solve decay also include cumulative history of gradients
   X_batch input batch
   Y_batch output batch
   model:Network model to train on
@@ -112,6 +116,7 @@ def adam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,bet
   beta1:float=0.9 momentum
   beta2:float=0.999 momentum
   lmda:float=0 decay parameter
+  Lecture 5.2 slide 45
   """
   Y_hat=model.forward_pass_network(X_batch)
   batch_loss_vec=loss_fn(Y_hat,Y_batch)
@@ -140,7 +145,7 @@ def adam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,bet
 
 def nadam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,beta2=0.999,lmda:float=0,epsilon:float=0.000001):
   """
-  nAdam optimizer
+  nAdam optimizer : Nestrov adam
   X_batch input batch
   Y_batch output batch
   model:Network model to train on
@@ -149,6 +154,7 @@ def nadam(X_batch,Y_batch,model:Network,loss_fn,eta:float=0.1,beta1:float=0.9,be
   beta1:float=0.9 momentum
   beta2:float=0.999 momentum
   lmda:float=0 decay parameter
+  Lecture 5.2 Slide 69
   """
   Y_hat=model.forward_pass_network(X_batch)
   batch_loss_vec=loss_fn(Y_hat,Y_batch)

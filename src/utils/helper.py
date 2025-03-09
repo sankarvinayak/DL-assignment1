@@ -19,21 +19,31 @@ def construct_network(inp_size:int,num_layers:int,layer_size:int,out_size:int,ac
   weight_initialisation:str random initialization default Xavier availabel
   """
   np.random.seed(41)
+  
   net=Network()
+  
   if(activation_f=='sigmoid'):
     activation_fn=Sigmoid()
+  
   elif(activation_f=='tanh'):
     activation_fn=Tanh()
+  
   elif(activation_f=='ReLU'):
     activation_fn=ReLU()
+  
   elif(activation_f=='identity'):
      activation_fn=Linear()
+  
   else:
     raise ValueError("Invalid activation function or not implimented yet")
+  
   net.append_layer(fc_layer(n_inputs=inp_size, n_output=layer_size, activation_fn=activation_fn,initialization=weight_initialisation))
-  for i in range(num_layers-1): #there was a one off error here
+  
+  for i in range(num_layers-1): 
     net.append_layer(fc_layer(n_inputs=layer_size, n_output=layer_size, activation_fn=activation_fn,initialization=weight_initialisation))
+  
   net.append_layer(fc_layer(n_inputs=layer_size, n_output=out_size, activation_fn=Softmax(),initialization=weight_initialisation))
+  
   return net
 
 
@@ -46,14 +56,19 @@ def get_data(dataset_name:str="fmnist")->tuple:
   """
   if(dataset_name=="fmnist"):
     (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
+  
   elif(dataset_name=="mnist"):
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
+ 
   else:
     raise ValueError("Invalid dataset name currently accepting values fmnist(fasion mnist) mnist")
+  
   x_train_flat=x_train.reshape(x_train.shape[0],-1)/255.0
   x_test_flat=x_test.reshape(x_test.shape[0],-1)/255.0
+  
   one_hot_y_train=one_hot_encode(y_train,np.unique(y_train).shape[0])
   one_hot_y_test=one_hot_encode(y_test,np.unique(y_test).shape[0])
+  
   return x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test
 
 def mpl2plotly(cmap, entries=10):
@@ -70,6 +85,7 @@ def create_conf_mat(y_true:list,y_pred:list,class_labels:list,title="Confusion M
   for t,p in zip(y_true,y_pred): cm[int(t),int(p)] += 1
   ps=mpl2plotly(sns.color_palette("mako",as_cmap=True),10)
   ht=list()
+
   for i in range(n):
     row=[]
     for j in range(n):
@@ -78,12 +94,16 @@ def create_conf_mat(y_true:list,y_pred:list,class_labels:list,title="Confusion M
       else: msg=f"class {class_labels[i]} predicted as {class_labels[j]}: {val}"
       row.append(msg)
     ht.append(row)
+
   fig=go.Figure(data=go.Heatmap(z=cm,x=class_labels,y=class_labels,text=ht,hovertemplate='%{text}<extra></extra>',colorscale=ps,hoverongaps=False,showscale=True))
+
   for i in range(n):
     for j in range(n):
       fc="white" if cm[i,j]>np.max(cm)/2 else "black"
       fig.add_annotation(x=class_labels[j],y=class_labels[i],text=str(cm[i,j]),showarrow=False,font=dict(color=fc))
+
   fig.update_layout(title=title,xaxis_title="Predicted Label",yaxis_title="True Label",xaxis=dict(tickmode='array',tickvals=class_labels),yaxis=dict(tickmode='array',tickvals=class_labels),template='plotly_white',font=dict(family="Arial",size=12),margin=dict(l=40,r=40,t=40,b=40))
+  
   return fig
 
 
@@ -114,6 +134,7 @@ def train_model(dataset_name:str="fmnist",num_hidden_layers:int=4,hidden_layer_s
   np.random.seed(41)
   print("Getting data")
   x_train_flat,y_train,x_test_flat,y_test,one_hot_y_train,one_hot_y_test=get_data(dataset_name=dataset_name)
+
   print("Splitting into train and validation set")
   n_samples=x_train_flat.shape[0]
   indices=np.random.permutation(n_samples)
@@ -126,15 +147,20 @@ def train_model(dataset_name:str="fmnist",num_hidden_layers:int=4,hidden_layer_s
   one_hot_y_val=one_hot_y_train[val_ids]
   y_val=y_train[val_ids]
 
+  print("Creating network for training")
+
   inp_shp=x_train_flat.shape[1]
   out_shp=np.unique(y_train).shape[0]
-  print("Creating network for training")
   model=construct_network(inp_size=inp_shp, num_layers=num_hidden_layers,layer_size=hidden_layer_size, out_size=out_shp,activation_f=activation_function,weight_initialisation=weight_initialisation)
 
   loss_fn = CrossEntropy
+
   n_train = x_train_new.shape[0]
+
   print("Training started")
+
   for epoch in range(num_epochs):
+      
       permutation = np.random.permutation(n_train)
       X_shuffled = x_train_new[permutation]
       Y_shuffled = one_hot_y_train_new[permutation]
@@ -142,20 +168,28 @@ def train_model(dataset_name:str="fmnist",num_hidden_layers:int=4,hidden_layer_s
       num_batches = 0
 
       for i in range(0, n_train, batch_size):
+          
           batch_end = min(i + batch_size, n_train)
           X_batch = X_shuffled[i:batch_end]
           Y_batch = Y_shuffled[i:batch_end]
+
           model.zero_grad()
+
           if optimizer=="sgd":
               batch_loss=vanilla_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda)
+
           elif optimizer=="momentum":
               batch_loss=momentum_based_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda,beta=momentum)
+
           elif optimizer=="nesterov":
               batch_loss=nestrov_accelerated_gradient_descent(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda,beta=momentum)
+
           elif optimizer=="rmsprop":
               batch_loss=rmsprop(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda,beta=beta)
+
           elif optimizer=="adam":
               batch_loss=adam(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda,beta1=beta1,beta2=beta2,epsilon=epsilon)
+
           elif optimizer=="nadam":
               batch_loss=nadam(X_batch,Y_batch,model,loss_fn,eta=lr,lmda=lmda,beta1=beta1,beta2=beta2,epsilon=epsilon)
 
@@ -170,18 +204,26 @@ def train_model(dataset_name:str="fmnist",num_hidden_layers:int=4,hidden_layer_s
       val_acc=accuracy(y_val, y_pred_val)
 
       print(f"Epoch {epoch}: Loss = {epoch_loss:.4f}, Train Accuracy = {train_acc:.4f}, Val Loss = {val_loss:.4f}, Val Accuracy = {val_acc:.4f}")
+      
       if logging:
           wandb.log({"train_accuracy":train_acc,"val_accuracy":val_acc,"train_loss":epoch_loss,"val_loss":val_loss,"epoch":epoch+1})
+  
   print("Training finished")
+  
   if logging:
+    
     y_pred=np.argmax( model.forward_pass_network(x_test_flat),axis=1)
     print(f"Test accuracy:{np.mean(y_pred==y_test)*100}%")
     if dataset_name=='fmnist':
       class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+    
     elif dataset_name=='mnist':
       class_names=[str(i) for i in  range(10)]
+    
     print("Logging confusion matrix")
+    
     fig=create_conf_mat(y_test,y_pred,class_names,"Confusion Matrix") 
+    
     wandb.log({f"Confusion matrix {dataset_name}": wandb.Plotly(fig)})
     
   
