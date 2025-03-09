@@ -11,7 +11,7 @@ def main():
     inp_shp=x_train_flat.shape[1]
     out_shp=np.unique(y_train).shape[0] 
     
-    model=construct_network(inp_size=inp_shp,num_layers=3,layer_size=32,out_size=out_shp) # Create a 1 input layer 2 hidden layer 1 output layer network
+    model=construct_network(inp_size=inp_shp,num_layers=3,layer_size=32,out_size=out_shp) # Create a 1 input layer 2 hidden layer 1 output layer network due to the softmax layer will give output probabilities
     train_loop(x_train_flat,y_train,max_iter=5,model=model,print_iter=1)
 
 
