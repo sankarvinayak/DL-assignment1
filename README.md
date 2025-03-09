@@ -25,7 +25,7 @@ The above code will log the following data in the wandb
 ![Wandb interface](media/wandb_demo.png )
 For more information follow the `DL_assignment_1.ipynb` file in which each step is described more clearly 
 
-for detailed documentation chechout the [docs](./docs/Getting%20_started.md)
+for detailed documentation and code organization details chechout the [docs](./docs/Getting%20_started.md)
 
 The report for this project can be found at [here](https://api.wandb.ai/links/cs24m041-iit-madras/df4tf56f)
 
