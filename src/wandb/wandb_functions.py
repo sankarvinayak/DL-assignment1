@@ -152,7 +152,7 @@ def run_wandb_sweep(entity,project,method:str="bayes",count=10):
 def wandb_run_experiment(args):
     """Take inputs from the command line arguments and run a single run based on the parameters passed and logs in the wandb"""
     # print(args)
-    print("Run configuration")
+    print("\n\nRun configuration")
 
     wandb_entity=args.wandb_entity
     wandb_project=args.wandb_project
@@ -173,9 +173,9 @@ def wandb_run_experiment(args):
     hidden_size=args.hidden_size
     activation=args.activation
 
-    print(f"Wandb entity:{wandb_entity},wandb project:{wandb_project}")
-    print(f"\nNetwork architecture \n\nweight decay rate:{lmda}\n Number of hidden layers{num_layers}\n Size nodes in each hidden layer:{hidden_size}\n Activation function{activation}")
-    print(f"\nTraining\n\nDataset:{dataset}\n Epochs:{epochs}\n batch size:{batch_size}\n loss function:{loss}\n Learning rate:{lr}\n Optimizer:{optimizer}\n")
+    print(f"\nWandb entity:{wandb_entity},\nwandb project:{wandb_project}")
+    print(f"\nNetwork architecture: \n\nweight decay rate:{lmda}\n Number of hidden layers:{num_layers}\n Size nodes in each hidden layer:{hidden_size}\n Activation function:{activation}")
+    print(f"\nTraining:\n\nDataset:{dataset}\n Epochs:{epochs}\n batch size:{batch_size}\n loss function:{loss}\n Learning rate:{lr}\n Optimizer:{optimizer}\n")
     
     if dataset=="fashion_mnist":
         dataset='fmnist'
@@ -196,7 +196,7 @@ def wandb_run_experiment(args):
         print(f"beta:{beta}")
         config['beta']=beta
     elif optimizer=='adam' or optimizer=='nadam':
-        print(f"beta1:{beta1}\nbeta2:{beta2}\n epsilon{epsilon}")
+        print(f"beta1:{beta1}\nbeta2:{beta2}\n epsilon:{epsilon}")
         config["beta1"]=beta1
         config["beta2"]=beta2
         config["epsilon"]=epsilon
